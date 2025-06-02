@@ -9,11 +9,16 @@ public class PlayerController : MonoBehaviour
 
     public float playerSpeed;
     public Transform groundCheck;
-    public bool isPlayerTouchingTheGround;
+    public bool isPlayerTouchingTheGround; // Variavel responsável por verificar se o Player está tocando o chão
 
     public float touchRun = 0.0f; // Movimentação do Player no eixo Horizontal 
 
     public bool playerFacingRight = true;
+
+    public bool isJumping = false; // Verifica se o Player está pulando na cena
+    public int countOfJumps = 0; // Quantidade de pulos que o Player deu
+    public int maxJumps = 2; // Número de 2 pulos máximos
+    public float jumpForce; // Força do impulso do pulo
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +30,20 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Verifica se o Player toca o chão pela Layer do Collider do chão
+        isPlayerTouchingTheGround = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+        playerAnim.SetBool("isGrounded", isPlayerTouchingTheGround); // Passa o valor para a variável isGrounded do Animator
+
+        // Inputs Padrões da Unity  - Edit -> Project Settings -> Input Manager
+
         touchRun = Input.GetAxisRaw("Horizontal");
-        MoveAnimation();
+        
+        if(Input.GetButtonDown("Jump"))
+        {
+            isJumping = true;
+        }
+
+        SetAnimations();
     }
 
     void PlayerMove(float horizontalMovement) // Método de movimentação (Walk) do Player
@@ -44,6 +61,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate() 
     {
         PlayerMove(touchRun);
+
+        if(isJumping)
+        {
+            JumpAnimation();
+        }
     }
 
     void FlipPlayerSprite()
@@ -57,9 +79,21 @@ public class PlayerController : MonoBehaviour
 
     #region AnimationsActions
 
-    void MoveAnimation()
+    void SetAnimations()
     {
-        playerAnim.SetBool("isWalking", playerRigidBody.velocity.x != 0);
+        playerAnim.SetBool("isWalking", playerRigidBody.velocity.x != 0 && isPlayerTouchingTheGround);
+        playerAnim.SetBool("isJumping", !isPlayerTouchingTheGround);
+    }
+
+    void JumpAnimation()
+    {
+        if(isPlayerTouchingTheGround)
+        {
+            playerRigidBody.AddForce(new Vector2(0f, jumpForce));
+            isPlayerTouchingTheGround = false;
+        }
+
+        isJumping = false;
     }
 
     #endregion

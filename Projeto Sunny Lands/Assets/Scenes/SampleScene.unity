@@ -1400,10 +1400,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cbfdf1e7775151429f30089a595f82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerRigidBody: {fileID: 0}
   playerSpeed: 5
   groundCheck: {fileID: 1220585335}
   isPlayerTouchingTheGround: 0
   touchRun: 0
+  playerFacingRight: 1
+  isJumping: 0
+  countOfJumps: 0
+  maxJumps: 2
+  jumpForce: 0
 --- !u!1 &909333797
 GameObject:
   m_ObjectHideFlags: 0
@@ -18825,7 +18831,7 @@ GameObject:
   - component: {fileID: 1680093536}
   - component: {fileID: 1680093540}
   - component: {fileID: 1680093539}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
