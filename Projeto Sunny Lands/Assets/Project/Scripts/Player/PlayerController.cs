@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     public bool isPlayerTouchingTheGround; // Variavel responsável por verificar se o Player está tocando o chão
 
     public float touchRun = 0.0f; // Movimentação do Player no eixo Horizontal 
-
     public bool playerFacingRight = true;
 
     public bool isJumping = false; // Verifica se o Player está pulando na cena
@@ -23,6 +22,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Inicializando variáveis com os componentes do GameObject 
         playerAnim = GetComponent<Animator>();
         playerRigidBody = GetComponent<Rigidbody2D>();
     }
@@ -46,8 +46,35 @@ public class PlayerController : MonoBehaviour
         SetAnimations();
     }
 
-    void PlayerMove(float horizontalMovement) // Método de movimentação (Walk) do Player
-    { 
+    private void FixedUpdate() 
+    {
+        PlayerMoveAction(touchRun);
+
+        if(isJumping)
+        {
+            PlayerJumpAction();
+        }
+    }
+
+    #region AnimationsAndActions
+
+    void SetAnimations() // Método principal que faz a chamada das animações 
+    {
+        playerAnim.SetBool("isWalking", playerRigidBody.velocity.x != 0 && isPlayerTouchingTheGround);
+        playerAnim.SetBool("isJumping", !isPlayerTouchingTheGround);
+    }
+
+    void FlipPlayerSprite() // Método que "vira" o sprite do personagem horizontalmente (para onde está olhando)
+    {
+        playerFacingRight = !playerFacingRight;
+        Vector3 playerScale = transform.localScale;
+        playerScale *= -1;
+
+        transform.localScale = new Vector3(playerScale.x, transform.localScale.y, transform.localScale.z);
+    }
+
+    void PlayerMoveAction(float horizontalMovement) // Método de movimentação (Walk) do Player
+    {
 
 
         playerRigidBody.velocity = new Vector2(horizontalMovement * playerSpeed, playerRigidBody.velocity.y);
@@ -55,42 +82,21 @@ public class PlayerController : MonoBehaviour
         if (horizontalMovement < 0 && playerFacingRight || (horizontalMovement > 0 && !playerFacingRight))
         {
             FlipPlayerSprite();
-        }    
-    }
-
-    private void FixedUpdate() 
-    {
-        PlayerMove(touchRun);
-
-        if(isJumping)
-        {
-            JumpAnimation();
         }
     }
 
-    void FlipPlayerSprite()
-    {
-        playerFacingRight = !playerFacingRight;
-        Vector3 playerScale = transform.localScale;
-        playerScale *= -1; 
-
-        transform.localScale = new Vector3(playerScale.x, transform.localScale.y, transform.localScale.z);
-    }
-
-    #region AnimationsActions
-
-    void SetAnimations()
-    {
-        playerAnim.SetBool("isWalking", playerRigidBody.velocity.x != 0 && isPlayerTouchingTheGround);
-        playerAnim.SetBool("isJumping", !isPlayerTouchingTheGround);
-    }
-
-    void JumpAnimation()
+    void PlayerJumpAction() // Método de pulo (Jump) do Player
     {
         if(isPlayerTouchingTheGround)
         {
-            playerRigidBody.AddForce(new Vector2(0f, jumpForce));
+            countOfJumps = 0;
+        }
+
+        if(isPlayerTouchingTheGround || countOfJumps < maxJumps)
+        {
+            playerRigidBody.velocity = new Vector2(0f, jumpForce);
             isPlayerTouchingTheGround = false;
+            countOfJumps++;
         }
 
         isJumping = false;
