@@ -7,10 +7,14 @@ public class GameController : MonoBehaviour
 {
     private int score;
     [SerializeField] private Text scoreTxt;
+    public AudioSource audioSource;
+    public AudioClip collectedCarrotSound;
 
     public void ScorePoints(int scorePointsQnt)
     {
         score += scorePointsQnt;
         scoreTxt.text = score.ToString();
+
+        audioSource.PlayOneShot(collectedCarrotSound, 0.3F);
     } 
 }

@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     public float jumpForce; // Força do impulso do pulo
 
     private GameController gameController;
+    public AudioSource audioSource;
+    public AudioClip playerJumpSound;
 
     // Start is called before the first frame update
     void Start()
@@ -97,6 +99,7 @@ public class PlayerController : MonoBehaviour
 
         if(isPlayerTouchingTheGround || countOfJumps < maxJumps)
         {
+            audioSource.PlayOneShot(playerJumpSound, 0.3f);
             playerRigidBody.velocity = new Vector2(0f, jumpForce);
             isPlayerTouchingTheGround = false;
             countOfJumps++;
@@ -112,7 +115,7 @@ public class PlayerController : MonoBehaviour
         if(collision.gameObject.tag == "Collectable")
         {
             Destroy(collision.gameObject);
-            gameController.ScorePoints(1);
+            gameController.ScorePoints(1); // Ganha 1 ponto quando coleta a cenoura 
         }
     }
 }
