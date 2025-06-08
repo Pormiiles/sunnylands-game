@@ -19,12 +19,15 @@ public class PlayerController : MonoBehaviour
     public int maxJumps = 2; // Número de 2 pulos máximos
     public float jumpForce; // Força do impulso do pulo
 
+    private GameController gameController;
+
     // Start is called before the first frame update
     void Start()
     {
         // Inicializando variáveis com os componentes do GameObject 
         playerAnim = GetComponent<Animator>();
         playerRigidBody = GetComponent<Rigidbody2D>();
+        gameController = FindObjectOfType<GameController>();
     }
 
     // Update is called once per frame
@@ -103,4 +106,13 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Collectable")
+        {
+            Destroy(collision.gameObject);
+            gameController.ScorePoints(1);
+        }
+    }
 }
