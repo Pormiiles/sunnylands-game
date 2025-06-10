@@ -312,7 +312,7 @@ GameObject:
   - component: {fileID: 51969533}
   - component: {fileID: 51969532}
   - component: {fileID: 51969531}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BeeEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -328,7 +328,7 @@ Transform:
   m_GameObject: {fileID: 51969529}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 43.27, y: 0.5, z: -0.0658285}
+  m_LocalPosition: {x: 43.27, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1679,7 +1679,7 @@ GameObject:
   - component: {fileID: 471223551}
   - component: {fileID: 471223550}
   - component: {fileID: 471223549}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SlugEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2140,8 +2140,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetsPPU: 32
-  m_RefResolutionX: 384
-  m_RefResolutionY: 216
+  m_RefResolutionX: 320
+  m_RefResolutionY: 180
   m_UpscaleRT: 1
   m_PixelSnapping: 0
   m_CropFrameX: 0
@@ -3610,7 +3610,7 @@ GameObject:
   - component: {fileID: 1109047520}
   - component: {fileID: 1109047519}
   - component: {fileID: 1109047518}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BeeEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25765,10 +25765,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3050652760341524172, guid: 83319539437714048a6771346600f7a1, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5414275551363585328, guid: 83319539437714048a6771346600f7a1, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5414275551363585328, guid: 83319539437714048a6771346600f7a1, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841670245965904160, guid: 83319539437714048a6771346600f7a1, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 9560c51340d93ea4c9bb6f494b668872, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
