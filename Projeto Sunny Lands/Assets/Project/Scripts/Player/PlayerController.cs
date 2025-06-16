@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     private Animator playerAnim;
     public Rigidbody2D playerRigidBody;
+    public SpriteRenderer playerSR;
 
     public float playerSpeed;
     public Transform groundCheck;
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
 
     public float touchRun = 0.0f; // Movimentação do Player no eixo Horizontal 
     public bool playerFacingRight = true;
+    public bool playerVulnerable;
+    public int playerTotalLife = 3;
 
     public bool isJumping = false; // Verifica se o Player está pulando na cena
     public int countOfJumps = 0; // Quantidade de pulos que o Player deu
@@ -22,6 +25,8 @@ public class PlayerController : MonoBehaviour
     private GameController gameController;
     public AudioSource audioSource;
     public AudioClip playerJumpSound;
+    public AudioClip playerHitSound;
+    public AudioClip deathEnemySound;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +34,7 @@ public class PlayerController : MonoBehaviour
         // Inicializando variáveis com os componentes do GameObject 
         playerAnim = GetComponent<Animator>();
         playerRigidBody = GetComponent<Rigidbody2D>();
+        playerSR = GetComponent<SpriteRenderer>();
         gameController = FindObjectOfType<GameController>();
     }
 
@@ -40,7 +46,6 @@ public class PlayerController : MonoBehaviour
         playerAnim.SetBool("isGrounded", isPlayerTouchingTheGround); // Passa o valor para a variável isGrounded do Animator
 
         // Inputs Padrões da Unity  - Edit -> Project Settings -> Input Manager
-
         touchRun = Input.GetAxisRaw("Horizontal");
         
         if(Input.GetButtonDown("Jump"))
@@ -116,6 +121,50 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(collision.gameObject);
             gameController.ScorePoints(1); // Ganha 1 ponto quando coleta a cenoura 
+        } 
+
+        if(collision.gameObject.tag == "Enemy")
+        {
+            Animator enemyAnimator = collision.gameObject.GetComponent<Animator>();
+            
+            enemyAnimator.SetBool("isDead", true);
+            GameController.instance.PlaySFX(deathEnemySound, 0.5f);
+            playerRigidBody.velocity = new Vector2(0f, jumpForce);
+            Destroy(collision.gameObject, 0.4f);
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Enemy")
+        {
+            PlayerHit();
+        }
+    }
+
+    void PlayerHit()
+    {
+        if(!playerVulnerable) // O player não pode tomar mais dano se estiver invulneravel (levou hit)
+        {
+            playerVulnerable = true;
+
+            playerTotalLife--;
+            GameController.instance.PlaySFX(playerHitSound, 0.5f);
+            StartCoroutine(HitEffect());
+            GameController.instance.UpdateLifeBarSprite(playerTotalLife);
+        }
+    }
+
+    IEnumerator HitEffect() // Efeito de Hit (Player piscando durante um curto periodo)
+    {
+        for(float i = 0; i < 0.5; i += 0.1f)
+        {
+            playerSR.enabled = false;
+            yield return new WaitForSeconds(0.1f);
+            playerSR.enabled = true;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        playerVulnerable = false; // Player volta ao estado normal (vulneravel a sofrer hit de novo)
     }
 }
