@@ -114,6 +114,48 @@ public class PlayerController : MonoBehaviour
         isJumping = false;
     }
 
+    void PlayerHit()
+    {
+        if (!playerVulnerable) // O player não pode tomar mais dano se estiver invulneravel (levou hit)
+        {
+            playerVulnerable = true;
+
+            playerTotalLife--;
+            GameController.instance.PlaySFX(playerHitSound, 0.5f);
+            StartCoroutine(HitEffect());
+            GameController.instance.UpdateLifeBarSprite(playerTotalLife);
+
+            if (playerTotalLife < 1)
+            {
+                PlayerDies();
+            }
+        }
+    }
+
+    void PlayerDies()
+    {
+        GameObject deadPlayer = Instantiate(deadPlayerObj, transform.position, Quaternion.identity);
+        Rigidbody2D deadPlayerRB = deadPlayer.GetComponent<Rigidbody2D>();
+        deadPlayerRB.AddForce(new Vector2(150f, 400f));
+
+        GameController.instance.ActivedGameOverPopup();
+        gameObject.SetActive(false);
+        Destroy(deadPlayer, 5f);
+    }
+
+    IEnumerator HitEffect() // Efeito de Hit (Player piscando durante um curto periodo)
+    {
+        for (float i = 0; i < 0.5; i += 0.1f)
+        {
+            playerSR.enabled = false;
+            yield return new WaitForSeconds(0.1f);
+            playerSR.enabled = true;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        playerVulnerable = false; // Player volta ao estado normal (vulneravel a sofrer hit de novo)
+    }
+
     #endregion
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -133,6 +175,14 @@ public class PlayerController : MonoBehaviour
             playerRigidBody.velocity = new Vector2(0f, jumpForce);
             Destroy(collision.gameObject, 0.4f);
         }
+
+        if(collision.gameObject.tag == "Damage")
+        {
+            playerTotalLife = 0;
+            GameController.instance.UpdateLifeBarSprite(playerTotalLife);
+            GameController.instance.PlaySFX(playerHitSound, 0.5f);
+            PlayerDies();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -141,42 +191,5 @@ public class PlayerController : MonoBehaviour
         {
             PlayerHit();
         }
-    }
-
-    void PlayerHit()
-    {
-        if(!playerVulnerable) // O player não pode tomar mais dano se estiver invulneravel (levou hit)
-        {
-            playerVulnerable = true;
-
-            playerTotalLife--;
-            GameController.instance.PlaySFX(playerHitSound, 0.5f);
-            StartCoroutine(HitEffect());
-            GameController.instance.UpdateLifeBarSprite(playerTotalLife);
-
-            if(playerTotalLife < 1)
-            {
-                GameObject deadPlayer = Instantiate(deadPlayerObj, transform.position, Quaternion.identity);
-                Rigidbody2D deadPlayerRB = deadPlayer.GetComponent<Rigidbody2D>();
-                deadPlayerRB.AddForce(new Vector2(150f, 400f));
-
-                GameController.instance.ActivedGameOverPopup();
-                gameObject.SetActive(false);  
-                Destroy(deadPlayer, 5f);
-            }
-        }
-    }
-
-    IEnumerator HitEffect() // Efeito de Hit (Player piscando durante um curto periodo)
-    {
-        for(float i = 0; i < 0.5; i += 0.1f)
-        {
-            playerSR.enabled = false;
-            yield return new WaitForSeconds(0.1f);
-            playerSR.enabled = true;
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        playerVulnerable = false; // Player volta ao estado normal (vulneravel a sofrer hit de novo)
     }
 }

@@ -55,6 +55,7 @@ public class GameController : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
     IEnumerator LoadGameOverPopup()
     {
         yield return new WaitForSeconds(2.5f);
