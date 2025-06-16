@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce; // Força do impulso do pulo
 
     private GameController gameController;
+    public GameObject deadPlayerObj;
     public AudioSource audioSource;
     public AudioClip playerJumpSound;
     public AudioClip playerHitSound;
@@ -152,6 +153,17 @@ public class PlayerController : MonoBehaviour
             GameController.instance.PlaySFX(playerHitSound, 0.5f);
             StartCoroutine(HitEffect());
             GameController.instance.UpdateLifeBarSprite(playerTotalLife);
+
+            if(playerTotalLife < 1)
+            {
+                GameObject deadPlayer = Instantiate(deadPlayerObj, transform.position, Quaternion.identity);
+                Rigidbody2D deadPlayerRB = deadPlayer.GetComponent<Rigidbody2D>();
+                deadPlayerRB.AddForce(new Vector2(150f, 400f));
+
+                GameController.instance.ActivedGameOverPopup();
+                gameObject.SetActive(false);  
+                Destroy(deadPlayer, 5f);
+            }
         }
     }
 

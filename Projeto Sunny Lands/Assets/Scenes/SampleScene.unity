@@ -25047,6 +25047,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1995055450}
     - target: {fileID: 197408288136273284, guid: 83319539437714048a6771346600f7a1, type: 3}
+      propertyPath: deadPlayerObj
+      value: 
+      objectReference: {fileID: 1340549240580657257, guid: 67e4821f114f2a442b40a46977d10946, type: 3}
+    - target: {fileID: 197408288136273284, guid: 83319539437714048a6771346600f7a1, type: 3}
       propertyPath: playerHitSound
       value: 
       objectReference: {fileID: 8300000, guid: 4a08c8484f27cee48a0e4ff4f5d23d74, type: 3}
