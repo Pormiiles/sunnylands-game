@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip playerHitSound;
     public AudioClip deathEnemySound;
 
+    public ParticleSystem dustParticles;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,6 +69,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void CreateDustParticleEffect()
+    {
+        dustParticles.Play();
+    }
+
     #region AnimationsAndActions
 
     void SetAnimations() // Método principal que faz a chamada das animações 
@@ -77,6 +84,7 @@ public class PlayerController : MonoBehaviour
 
     void FlipPlayerSprite() // Método que "vira" o sprite do personagem horizontalmente (para onde está olhando)
     {
+        CreateDustParticleEffect();
         playerFacingRight = !playerFacingRight;
         Vector3 playerScale = transform.localScale;
         playerScale *= -1;
@@ -86,8 +94,6 @@ public class PlayerController : MonoBehaviour
 
     void PlayerMoveAction(float horizontalMovement) // Método de movimentação (Walk) do Player
     {
-
-
         playerRigidBody.velocity = new Vector2(horizontalMovement * playerSpeed, playerRigidBody.velocity.y);
 
         if (horizontalMovement < 0 && playerFacingRight || (horizontalMovement > 0 && !playerFacingRight))
@@ -101,10 +107,12 @@ public class PlayerController : MonoBehaviour
         if(isPlayerTouchingTheGround)
         {
             countOfJumps = 0;
+            CreateDustParticleEffect();
         }
 
         if(isPlayerTouchingTheGround || countOfJumps < maxJumps)
         {
+            CreateDustParticleEffect();
             audioSource.PlayOneShot(playerJumpSound, 0.3f);
             playerRigidBody.velocity = new Vector2(0f, jumpForce);
             isPlayerTouchingTheGround = false;
