@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditor.SearchService;
 
 public class GameController : MonoBehaviour
 {
@@ -54,6 +55,25 @@ public class GameController : MonoBehaviour
     public void RetryLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void PlayGame(string scene)
+    {
+        SceneManager.LoadScene(scene);
+    }
+
+    public void GoBackToHome(string scene)
+    {
+        SceneManager.LoadScene(scene);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
 
     IEnumerator LoadGameOverPopup()
